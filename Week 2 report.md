@@ -45,3 +45,108 @@ Sử dụng những câu truy vấn "sáng tạo" để tìm kiếm những bả
 
 ***site***: search domain  
 ***filetype***: search theo loại file
+.... more research  
+
+### **6.5 netcraft**  
+
+...  
+
+### **6.6 recon-ng**  
+
+Một module-based framework để thu thập thông tin của web-based.  
+Các kết quả trước sẽ update thông tin cho các modules sau.  
+
+search tools:  
+```marketplace search github```
+
+lấy thông tin của tools  
+```marketplace info recon/domains-hosts/google_site_web```
+
+cài đặt thông tin  
+```marketplace install recon/domains-hosts/google_site_web```
+
+cài đặt modules  
+```marketplace install recon/domains-hosts/google_site_web```
+
+load modules  
+```modules load recon/domains-hosts/google_site_web```
+
+show info of modules  
+```info```
+
+cài đặt thông tin các options  
+```options set SOURCE <ip>```
+
+run tools  
+```run```
+
+### **6.7 Open-source code**
+
+tìm kiếm trong github, tìm với  
+```filename:users```
+Tìm kiếm các file có users trong tên.  
+
+### **6.8 shodan**
+
+### **6.9 Security headers scanner**
+
+Có mấy trang web cho scan header  
+<https://securityheaders.com/>  
+
+### **6.10 SSL server test**  
+
+So sánh cài đặt ssl/tls giữa trang web và cài đặt tốt nhất.  
+
+### **6.11 Pastebin**  
+
+...
+
+### **6.15 Information gathering frameworks**
+
+<https://osintframework.com/>
+
+## phần 7: Active information Gathering
+
+### 7.1 DNS Enumeration
+
+NS - tên của máy chủ có quyền lưu trữ bản ghi DNS cho một tên miền  
+A - chứa IP của 1 hostname  
+MX - Mail exchange chứa tên của server chịu trách nhiệm cho việc xử lý mail cho domain. 1 domain có thể chứa nhiều MX records.  
+PTR - pointer records chứa tên domain của 1 địa chỉ ip.  
+CNAME -  
+TXT - Text record chứa thông tin bất kì, được dùng cho nhiều mục đích khác nhau  
+
+#### 7.1.6 relevant tools  
+
+##### dnsrecon  
+
+```bash
+dnsrecon -d <ip> -t axfr 
+-d: ip  
+-t: xác định loại của liệt kê sẽ thực hiện 
+...
+```
+
+##### dnsenum  
+
+Cách dùng: `dnsenum \<ip\>`
+
+### 7.2 Port Scanning  
+
+Quét các cổng TCP, UDP để phát hiện các dịch vụ đang chạy trên máy remote  
+
+#### **TCP scanning**  
+
+`nc -nvv -w 1 -z <ip> <from port - to port>`
+
+-w: connection timeout in seconds  
+-z: chế độ zero-I/O.  
+
+#### **UDP scanning**  
+
+`nc -nv -u -z -w 1 <ip> <from port - to port>`  
+-u: udp scan
+
+#### Port scanning with Nmap  
+
+
