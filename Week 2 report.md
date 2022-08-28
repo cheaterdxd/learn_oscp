@@ -149,4 +149,77 @@ Quét các cổng TCP, UDP để phát hiện các dịch vụ đang chạy trê
 
 #### Port scanning with Nmap  
 
+Account for our traffic :
+Khi nmap scan 1000 port thường được sử dụng nhiều nhất.
+Dùng iptables để theo dõi khối lượng gói được gửi bởi loại scan này.  
 
+```bash
+sudo iptables -I INPUT 1 -s ip -j ACCEPT
+sudo iptables -I OUTPUT 1 -d 10.11.1.220 -j ACCEPT
+sudo iptables -Z
+
+-I: thêm 1 luật mới vào chuỗi đã có
+    ví dụ: INPUT, OUTPUT
+-s: địa chỉ ip nguồn
+-d: địa chỉ ip đích
+-j ACCEPT: chấp nhận gói đi qua.
+-z: reset bộ đếm gói và byte trong chuỗi thành 0  
+-v: verbose output
+-n: numeric output
+-L: list the rule hiện tại trong chains
+```
+
+**Stealth/SYN scanning:**
+SYN là kĩ thuật scan được yêu thích nhất.  
+Có nhiều lợi ích:  
+
+- Là kỹ thuật scan mặc định và để thực thi thì user cần có quyền gửi các gói raw sockets.  
+- Raw socket: có thể xác định từng phần của 1 gói tin, cả header và payload của tất cả các tầng từ L2. So sánh với non-Raw socket chỉ có thể chỉnh sửa payload trên lớp transport.  
+- Kỹ thuật này gửi các gói tin SYN đến tất cả các port và không hoàn thành việc bắt tay theo giao thưc TCP. Nó nhận gói SYN-ACK trả về nếu port được mở và không quan tâm gói ACK được gửi hay không.  
+- Bởi vì quá trình bắt tay không thành công nên hành vi này sẽ không được gửi đến lớp ứng dụng nên sẽ không xuất hiện trong log của ứng dụng.  
+- Nhanh và hiệu quả bởi vì ít các gói được gửi và nhận.  
+
+**TCP connect scanning:**  
+
+- Khi user không có quyền raw socket. Nmap thực hiện kết nối theo giao thức tcp mặc định.  
+- Vì cần đợi các kết nối xác nhận nên thời gian hoàn thành lâu.  
+Cách dùng:
+`nmap -sT ip`
+
+**UDP scanning:**  
+
+- kết hợp 2 kĩ thuật khác nhau: gửi các gói ICMP mặc định và gửi các gói riêng biệt theo từng giao thức cụ thể trên các port cụ thể.  
+- sudo required  
+Cách dùng:
+`nmap -sU ip`  
+
+kết hợp bằng cách sử dụng -sU và -sS để lấy được tất cả các cổng tcp và udp:
+`nmap -sU -sS ip`  
+
+**Network sweeping:**  
+
+Cách dùng:
+`nmap -sn 192.168.1.1-254 -oG output_file.txt`  
+
+Tìm kiếm các host up:  
+`grep Up output_file.txt | cut -d " " -f 2`  
+
+Quét trên 1 port nhất định:
+`nmap -p [port] [ip].1-254 -oG file.txt`  
+
+Quét trên 1 số lượng port phổ biến thay vì 1000 port phổ biến như mặc định:
+`nmap --top-port [số lượng]`  
+
+Quét tất cả các option sau: os version, script scanning , tracerout
+`nmap -A`
+
+**Banner grabbing/service numeration:**  
+
+-sV: service banners  
+-A: service enumeration  
+
+**Nmap scripting engine (NSE):**  
+
+- Dùng các script để tự động các task scanning. Các scripts này thực hiện nhiều loại chức năng như: DNS enumeration, brute force attacks, xác thực vulnerable.  
+- Chứa trong thư mục: /usr/share/nmap/scripts  
+- `--script-help <tên script>` để xem hướng dẫn sử dụng của scripts.  
